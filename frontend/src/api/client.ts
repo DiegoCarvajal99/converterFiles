@@ -9,11 +9,22 @@ const client = axios.create({
 
 // Interceptor para manejo global de errores de red o servidor
 client.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // Si la respuesta exitosa (200) es en realidad una página HTML de Vercel (fallback)
+    if (typeof response.data === 'string' && response.data.includes('<html')) {
+      return Promise.reject(new Error('La API no está disponible (error de despliegue en el backend).'));
+    }
+    return response;
+  },
   (error) => {
     // Si no hay respuesta del servidor (error de red/CORS)
     if (!error.response) {
       return Promise.reject(new Error('No se pudo conectar con el servidor. Verifica tu conexión o que el backend esté en ejecución.'));
+    }
+    
+    // Si Vercel devuelve una página HTML de error
+    if (typeof error.response.data === 'string' && error.response.data.includes('<html')) {
+      return Promise.reject(new Error('El servidor devolvió un error interno o la API no está disponible.'));
     }
     
     // Errores 400 y 500
