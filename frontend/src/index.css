@@ -1,0 +1,582 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-900 antialiased;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   NAVBAR
+   ═══════════════════════════════════════════════ */
+.navbar-main {
+  @apply fixed top-0 left-0 right-0 z-50;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  backdrop-filter: blur(20px);
+  height: 64px;
+}
+
+.navbar-inner {
+  @apply max-w-[1400px] mx-auto px-4 sm:px-6 h-full flex items-center justify-between gap-4;
+}
+
+/* Logo */
+.navbar-logo {
+  @apply flex items-center gap-2.5 shrink-0;
+  text-decoration: none;
+}
+
+.navbar-logo-icon {
+  @apply w-9 h-9 rounded-xl flex items-center justify-center;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+}
+
+.navbar-logo-text {
+  @apply text-lg font-bold text-white tracking-tight hidden sm:block;
+}
+
+/* Links container */
+.navbar-links {
+  @apply hidden lg:flex items-center gap-1 flex-1 justify-center;
+}
+
+.navbar-item-wrapper {
+  @apply relative;
+}
+
+.navbar-item {
+  @apply flex items-center gap-1 px-3 py-2 text-sm font-medium text-slate-300 rounded-lg;
+  @apply transition-all duration-200 cursor-pointer bg-transparent border-none;
+}
+.navbar-item:hover,
+.navbar-item.active {
+  @apply text-white bg-white/10;
+}
+
+.navbar-chevron {
+  @apply w-3.5 h-3.5 transition-transform duration-200;
+}
+.navbar-chevron.rotate {
+  transform: rotate(180deg);
+}
+
+/* Actions */
+.navbar-actions {
+  @apply hidden lg:flex items-center shrink-0;
+}
+
+.navbar-all-tools-btn {
+  @apply px-4 py-2 text-sm font-semibold rounded-xl transition-all duration-200;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color: white;
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+}
+.navbar-all-tools-btn:hover {
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.45);
+  transform: translateY(-1px);
+}
+
+/* Mobile toggle */
+.navbar-mobile-toggle {
+  @apply lg:hidden p-2 text-slate-300 hover:text-white hover:bg-white/10 rounded-lg transition-colors;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* ═══════════════════════════════════════════════
+   MEGA DROPDOWN
+   ═══════════════════════════════════════════════ */
+.mega-dropdown {
+  @apply absolute top-full left-1/2 pt-2;
+  transform: translateX(-50%);
+  animation: dropdownIn 0.2s ease-out;
+  z-index: 100;
+}
+
+.mega-dropdown.convert-dropdown {
+  min-width: 580px;
+}
+
+.mega-dropdown-inner {
+  @apply bg-white rounded-2xl shadow-2xl border border-slate-200/80 p-4;
+  backdrop-filter: blur(20px);
+  min-width: 280px;
+}
+.mega-dropdown-inner.single {
+  min-width: 300px;
+}
+
+.mega-dropdown-section {
+  @apply mb-4 last:mb-0;
+}
+.mega-dropdown-section + .mega-dropdown-section {
+  @apply pt-4 border-t border-slate-100;
+}
+
+.mega-dropdown-title {
+  @apply text-xs font-bold uppercase tracking-wider mb-3 px-2;
+}
+
+.mega-dropdown-grid {
+  @apply grid gap-1;
+}
+.convert-dropdown .mega-dropdown-grid {
+  @apply grid-cols-1 sm:grid-cols-2;
+}
+
+.mega-dropdown-link {
+  @apply flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150;
+  text-decoration: none;
+  color: inherit;
+}
+.mega-dropdown-link:hover {
+  background: color-mix(in srgb, var(--cat-color) 8%, white);
+}
+.mega-dropdown-link.active {
+  background: color-mix(in srgb, var(--cat-color) 12%, white);
+}
+
+.mega-dropdown-link-icon {
+  @apply w-9 h-9 rounded-xl flex items-center justify-center shrink-0;
+  transition: transform 0.2s;
+}
+.mega-dropdown-link:hover .mega-dropdown-link-icon {
+  transform: scale(1.08);
+}
+
+.mega-dropdown-link-name {
+  @apply block text-sm font-semibold text-slate-800 leading-tight;
+}
+
+.mega-dropdown-link-desc {
+  @apply block text-xs text-slate-400 mt-0.5 leading-snug;
+}
+
+.mega-dropdown-badge {
+  @apply ml-auto text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full;
+  @apply bg-amber-100 text-amber-600 shrink-0;
+}
+
+@keyframes dropdownIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(-8px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* ═══════════════════════════════════════════════
+   MOBILE MENU
+   ═══════════════════════════════════════════════ */
+.mobile-menu-overlay {
+  @apply fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity duration-300;
+  pointer-events: none;
+  opacity: 0;
+}
+.mobile-menu-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.mobile-menu-panel {
+  @apply fixed top-0 left-0 bottom-0 z-50 w-[300px] flex flex-col;
+  background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+  transform: translateX(-100%);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow-y: auto;
+}
+.mobile-menu-panel.open {
+  transform: translateX(0);
+}
+
+.mobile-menu-header {
+  @apply px-5 py-5 border-b border-white/10;
+}
+
+.mobile-menu-body {
+  @apply p-4 flex flex-col gap-1;
+}
+
+.mobile-menu-home-link {
+  @apply flex items-center px-4 py-3 text-sm font-semibold text-white bg-white/10 rounded-xl mb-3;
+  text-decoration: none;
+}
+.mobile-menu-home-link:hover {
+  @apply bg-white/15;
+}
+
+.mobile-menu-category {
+  @apply overflow-hidden;
+}
+
+.mobile-menu-category-btn {
+  @apply w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors;
+  @apply cursor-pointer bg-transparent border-none text-left;
+}
+.mobile-menu-category-btn:hover {
+  @apply bg-white/5;
+}
+
+.mobile-menu-category-dot {
+  @apply w-2.5 h-2.5 rounded-full shrink-0;
+}
+
+.mobile-menu-tools {
+  @apply pl-4 flex flex-col gap-0.5 overflow-hidden;
+  max-height: 0;
+  transition: max-height 0.3s ease-out;
+}
+.mobile-menu-tools.expanded {
+  max-height: 600px;
+}
+
+.mobile-menu-tool-link {
+  @apply flex items-center gap-3 px-4 py-2.5 text-sm text-slate-300 rounded-lg transition-colors;
+  text-decoration: none;
+}
+.mobile-menu-tool-link:hover {
+  @apply bg-white/5 text-white;
+}
+.mobile-menu-tool-link.active {
+  @apply bg-white/10 text-white;
+}
+
+.mobile-menu-badge {
+  @apply text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400;
+}
+
+/* ═══════════════════════════════════════════════
+   HOME PAGE
+   ═══════════════════════════════════════════════ */
+.home-page {
+  @apply pb-16;
+}
+
+.home-hero {
+  @apply py-16 sm:py-24 px-4 text-center;
+  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+}
+
+.home-hero-inner {
+  @apply max-w-3xl mx-auto;
+}
+
+.home-hero-badge {
+  @apply inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium mb-6;
+  background: linear-gradient(135deg, #6366f115, #8b5cf615);
+  color: #6366f1;
+  border: 1px solid #6366f125;
+}
+
+.home-hero-title {
+  @apply text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 leading-tight mb-6 tracking-tight;
+}
+
+.home-hero-title-accent {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.home-hero-subtitle {
+  @apply text-lg sm:text-xl text-slate-500 leading-relaxed max-w-2xl mx-auto;
+}
+
+/* Sección de herramientas */
+.home-tools-section {
+  @apply max-w-[1400px] mx-auto px-4 sm:px-6 mt-8 flex flex-col gap-12;
+}
+
+.home-category-block {
+  /* empty */
+}
+
+.home-category-header {
+  @apply flex items-center gap-3 mb-6;
+}
+
+.home-category-dot {
+  @apply w-3 h-3 rounded-full shrink-0;
+}
+
+.home-category-title {
+  @apply text-lg font-bold text-slate-800 shrink-0;
+}
+
+.home-category-line {
+  @apply flex-1 h-px;
+}
+
+.home-tools-grid {
+  @apply grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4;
+}
+
+/* ═══════════════════════════════════════════════
+   TOOL CARD
+   ═══════════════════════════════════════════════ */
+.tool-card {
+  @apply relative bg-white rounded-2xl p-5 flex flex-col items-center text-center;
+  @apply transition-all duration-300 cursor-pointer overflow-hidden;
+  border: 1px solid #e2e8f0;
+  text-decoration: none;
+  color: inherit;
+}
+.tool-card:hover {
+  @apply shadow-xl;
+  border-color: color-mix(in srgb, var(--card-color) 30%, #e2e8f0);
+  transform: translateY(-4px);
+}
+
+.tool-card-icon {
+  @apply w-14 h-14 rounded-2xl flex items-center justify-center mb-4;
+}
+
+.tool-card-title {
+  @apply text-sm font-bold text-slate-800 mb-1;
+}
+
+.tool-card-desc {
+  @apply text-xs text-slate-400 leading-snug line-clamp-2;
+}
+
+.tool-card-badge {
+  @apply mt-3 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full;
+  @apply bg-slate-100 text-slate-400;
+}
+
+.tool-card-bottom-bar {
+  @apply absolute bottom-0 left-0 right-0 h-[3px] opacity-0 transition-opacity duration-300;
+}
+.tool-card:hover .tool-card-bottom-bar {
+  opacity: 1;
+}
+
+/* ═══════════════════════════════════════════════
+   TOOL PAGE
+   ═══════════════════════════════════════════════ */
+.tool-page {
+  @apply min-h-[calc(100vh-64px)];
+}
+
+.tool-page-hero {
+  @apply py-12 px-4 text-center;
+  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+}
+
+.tool-page-hero-inner {
+  @apply max-w-2xl mx-auto flex flex-col items-center;
+}
+
+.tool-page-icon {
+  @apply w-16 h-16 rounded-2xl flex items-center justify-center mb-5;
+}
+
+.tool-page-title {
+  @apply text-3xl sm:text-4xl font-black text-slate-900 tracking-tight mb-3;
+}
+
+.tool-page-desc {
+  @apply text-lg text-slate-500;
+}
+
+.tool-page-workspace {
+  @apply max-w-[1400px] w-full mx-auto px-4 sm:px-6 py-8 grid grid-cols-1 gap-8;
+}
+
+.tool-page-uploader {
+  @apply bg-white rounded-3xl shadow-xl shadow-slate-200/60 p-2;
+}
+
+.tool-page-not-found {
+  @apply flex flex-col items-center justify-center min-h-[60vh] px-4;
+}
+
+.tool-page-back-link {
+  @apply inline-flex items-center text-indigo-600 font-medium hover:text-indigo-700 transition-colors;
+  text-decoration: none;
+}
+
+.tool-page-coming-soon {
+  @apply flex flex-col items-center justify-center py-20 px-4;
+}
+
+.tool-page-back-btn {
+  @apply inline-flex items-center px-6 py-3 text-white font-semibold rounded-xl transition-all;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+.tool-page-back-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+}
+
+/* ═══════════════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════════════ */
+.app-footer {
+  @apply border-t border-slate-200 py-8 mt-auto;
+}
+
+.app-footer-inner {
+  @apply max-w-[1400px] mx-auto px-4 sm:px-6 text-center;
+}
+
+/* ═══════════════════════════════════════════════
+   iLovePDF STYLE UI
+   ═══════════════════════════════════════════════ */
+
+/* Pantalla inicial de Upload */
+.ilovepdf-upload-screen {
+  @apply max-w-4xl mx-auto p-6 md:p-12 flex items-center justify-center min-h-[400px];
+}
+
+.ilovepdf-dropzone {
+  @apply w-full border-2 border-dashed border-slate-300 rounded-3xl p-12 md:p-20 flex flex-col items-center justify-center text-center transition-all bg-slate-50/50 hover:bg-slate-50 hover:border-slate-400;
+}
+
+.ilovepdf-upload-btn {
+  @apply px-8 py-5 rounded-2xl text-white font-bold text-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all cursor-pointer inline-flex items-center justify-center;
+}
+
+/* Workspace (Post-upload) */
+.ilovepdf-workspace {
+  @apply max-w-[1400px] mx-auto px-4 sm:px-6 py-8 flex flex-col lg:flex-row gap-8;
+}
+
+.ilovepdf-main-area {
+  @apply flex-1 flex flex-col gap-6;
+}
+
+.ilovepdf-side-panel {
+  @apply w-full lg:w-[320px] shrink-0 bg-white border border-slate-200 rounded-2xl p-6 flex flex-col sticky top-24 self-start shadow-sm;
+}
+
+/* Panel Lateral */
+.ilovepdf-side-info {
+  @apply flex flex-col items-center justify-center bg-slate-50 rounded-xl p-4 border border-slate-100;
+}
+
+.ilovepdf-side-options {
+  @apply flex flex-col gap-4 mb-6;
+}
+
+.ilovepdf-action-btn {
+  @apply w-full py-4 rounded-xl font-bold text-white text-lg flex items-center justify-center transition-all shadow-md mt-auto;
+}
+.ilovepdf-action-btn:not(:disabled):hover {
+  @apply shadow-lg -translate-y-0.5;
+}
+.ilovepdf-action-btn:disabled {
+  @apply opacity-50 cursor-not-allowed shadow-none;
+}
+.ilovepdf-action-btn.download {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+/* Grid de Thumbnails (Merge) */
+.ilovepdf-files-grid {
+  @apply grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4;
+}
+
+.ilovepdf-file-card {
+  @apply relative bg-white border-2 border-slate-200 rounded-xl overflow-hidden cursor-grab transition-all select-none hover:shadow-md hover:border-slate-300;
+}
+.ilovepdf-file-card.drag-over {
+  @apply border-indigo-500 scale-105 shadow-lg z-10;
+}
+.ilovepdf-file-card:active {
+  @apply cursor-grabbing;
+}
+
+.ilovepdf-card-badge {
+  @apply absolute top-2 left-2 z-10 w-6 h-6 rounded flex items-center justify-center text-[11px] font-bold text-white shadow-sm;
+}
+
+.ilovepdf-card-delete {
+  @apply absolute bottom-[46px] right-2 z-10 p-1.5 bg-white/90 backdrop-blur rounded hover:bg-red-50 hover:text-red-500 text-slate-400 transition-all opacity-0 shadow-sm border border-slate-100;
+}
+.ilovepdf-file-card:hover .ilovepdf-card-delete {
+  @apply opacity-100;
+}
+
+.ilovepdf-card-grip {
+  @apply absolute top-2 right-2 z-10 p-1 bg-white/80 backdrop-blur rounded text-slate-400 opacity-0 transition-opacity;
+}
+.ilovepdf-file-card:hover .ilovepdf-card-grip {
+  @apply opacity-100;
+}
+
+.ilovepdf-card-thumb {
+  @apply w-full aspect-[1/1.3] bg-slate-50 flex items-center justify-center overflow-hidden border-b border-slate-100;
+}
+.ilovepdf-card-thumb img {
+  @apply w-full h-full object-cover object-top;
+}
+
+.ilovepdf-card-info {
+  @apply p-2 bg-white;
+}
+.ilovepdf-card-name {
+  @apply text-xs font-semibold text-slate-700 truncate;
+}
+.ilovepdf-card-meta {
+  @apply text-[10px] text-slate-400 mt-0.5 truncate;
+}
+
+.ilovepdf-add-card {
+  @apply border-2 border-dashed border-slate-300 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:bg-slate-50 transition-all min-h-[160px] text-slate-500 hover:border-slate-400;
+}
+.ilovepdf-add-card span {
+  @apply mt-2 text-xs font-medium;
+}
+
+/* Lista simple de archivos (ToolUploader genérico) */
+.ilovepdf-file-list {
+  @apply flex flex-col divide-y divide-slate-100 bg-white border border-slate-200 rounded-2xl overflow-hidden;
+}
+
+.ilovepdf-file-row {
+  @apply flex items-center gap-4 p-4 hover:bg-slate-50 transition-colors;
+}
+
+.ilovepdf-file-delete {
+  @apply p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors;
+}
+
+.ilovepdf-add-more-btn {
+  @apply mt-4 flex items-center justify-center py-4 border-2 border-dashed rounded-2xl bg-white hover:bg-slate-50 transition-all cursor-pointer font-medium;
+}
+
+.ilovepdf-result-info {
+  @apply mt-4 flex items-center gap-3 p-4 bg-emerald-50 border border-emerald-200 rounded-2xl;
+}
+
+
+/* ═══════════════════════════════════════════════
+   SPLIT PDF SPECIFIC STYLES
+   ═══════════════════════════════════════════════ */
+.split-range-card {
+  @apply relative p-6 border-2 border-dashed border-slate-200 rounded-[32px] flex items-center gap-6 bg-slate-50/30 transition-all duration-300;
+}
+.split-range-card:hover {
+  @apply border-indigo-300 bg-indigo-50/10 shadow-lg shadow-indigo-100/50;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  @apply bg-slate-50 rounded-full;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-slate-200 rounded-full border-2 border-slate-50;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  @apply bg-slate-300;
+}
