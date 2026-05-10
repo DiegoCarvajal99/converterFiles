@@ -301,28 +301,47 @@ async def compress_pdf(
 
     buf = io.BytesIO()
 
-    # Configurar según nivel de compresión
-    if level == "high":
-        # Máxima compresión: recomprimir imágenes + limpiar objetos
+    # Configurar parámetros de guardado
+    save_opts = {"deflate": True, "clean": True}
+    
+    # Procesar imágenes para niveles Medium y High
+    if level in ["medium", "high"]:
+        quality = 75 if level == "medium" else 40
+        shrink_factor = 1 if level == "medium" else 2
+        
         for page in doc:
-            image_list = page.get_images(full=True)
-            for img_info in image_list:
+            for img_info in page.get_images(full=True):
                 xref = img_info[0]
                 try:
                     pix = fitz.Pixmap(doc, xref)
-                    if pix.n >= 4:  # CMYK → RGB
-                        pix = fitz.Pixmap(fitz.csRGB, pix)
-                    # Recomprimir como JPEG con calidad reducida
-                    img_bytes = pix.tobytes("jpeg")
-                    doc.update_stream(xref, img_bytes)
+                    
+                    # Convertir a RGB si es necesario
+                    if pix.n >= 4:
+                        pix_rgb = fitz.Pixmap(fitz.csRGB, pix)
+                    else:
+                        pix_rgb = pix
+                    
+                    # Si es nivel alto y la imagen es grande, reducir dimensiones (downsampling)
+                    if level == "high" and (pix_rgb.width > 1200 or pix_rgb.height > 1200):
+                        pix_rgb.shrink(2)
+
+                    # Recomprimir como JPEG con la calidad definida
+                    img_bytes = pix_rgb.tobytes("jpeg", quality=quality)
+                    doc.replace_image(xref, stream=img_bytes)
+                    
                     pix = None
-                except Exception:
-                    pass
-        doc.save(buf, garbage=4, deflate=True, clean=True, linear=True)
-    elif level == "medium":
-        doc.save(buf, garbage=3, deflate=True, clean=True)
-    else:  # low
-        doc.save(buf, garbage=2, deflate=True)
+                    if pix_rgb is not pix:
+                        pix_rgb = None
+                except Exception as e:
+                    print(f"Error comprimiendo imagen {xref}: {e}")
+                    continue
+
+        save_opts["garbage"] = 3 if level == "medium" else 4
+    else:
+        # Low compression
+        save_opts["garbage"] = 2
+
+    doc.save(buf, **save_opts)
 
     doc.close()
     buf.seek(0)
