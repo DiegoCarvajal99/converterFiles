@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { Loader2, Download, Trash2, GripVertical, PlusCircle } from 'lucide-react';
-import axios from 'axios';
+import client from '../api/client';
 import * as pdfjsLib from 'pdfjs-dist';
 
 // Smooth Drag & Drop imports
@@ -194,7 +194,7 @@ const MergePdfTool: React.FC<MergePdfToolProps> = ({ colorHex }) => {
     try {
       const formData = new FormData();
       files.forEach(f => formData.append('files', f.file));
-      const resp = await axios.post('/api/v1/tools/merge', formData, { responseType: 'blob' });
+      const resp = await client.post('/tools/merge', formData, { responseType: 'blob' });
       setResultBlob(resp.data);
     } catch (err: any) {
       let msg = 'Error al unir los archivos.';
@@ -288,36 +288,45 @@ const MergePdfTool: React.FC<MergePdfToolProps> = ({ colorHex }) => {
         </DndContext>
       </div>
 
-      {/* Panel lateral de acción */}
-      <div className="ilovepdf-side-panel">
-        <div className="ilovepdf-side-info">
-          <span className="text-2xl font-black text-slate-800">{files.length}</span>
-          <span className="text-sm text-slate-500">archivos</span>
-          <span className="text-2xl font-black text-slate-800 mt-2">{totalPages}</span>
-          <span className="text-sm text-slate-500">páginas totales</span>
+      {/* Panel lateral de acción - Mobile friendly */}
+      <div className="ilovepdf-side-panel mobile-friendly">
+        <div className="ilovepdf-side-info flex-row lg:flex-col gap-4 lg:gap-2">
+          <div className="flex flex-col items-center">
+            <span className="text-xl lg:text-2xl font-black text-slate-800">{files.length}</span>
+            <span className="text-[10px] lg:text-sm text-slate-500 uppercase font-bold">archivos</span>
+          </div>
+          <div className="w-px h-8 bg-slate-200 lg:hidden"></div>
+          <div className="flex flex-col items-center">
+            <span className="text-xl lg:text-2xl font-black text-slate-800">{totalPages}</span>
+            <span className="text-[10px] lg:text-sm text-slate-500 uppercase font-bold">páginas</span>
+          </div>
         </div>
-        <p className="text-xs text-slate-400 text-center mt-4 mb-4">
+        
+        <p className="hidden lg:block text-xs text-slate-400 text-center mt-4 mb-4">
           Arrastra las tarjetas para cambiar el orden
         </p>
-        {!resultBlob ? (
-          <button
-            onClick={handleProcess}
-            disabled={files.length < 2 || processing}
-            className="ilovepdf-action-btn"
-            style={{ backgroundColor: files.length >= 2 && !processing ? colorHex : '#94a3b8' }}
-          >
-            {processing ? (
-              <><Loader2 className="w-5 h-5 animate-spin mr-2" />Uniendo...</>
-            ) : (
-              'Unir PDF'
-            )}
-          </button>
-        ) : (
-          <button onClick={handleDownload} className="ilovepdf-action-btn download">
-            <Download className="w-5 h-5 mr-2" />
-            Descargar
-          </button>
-        )}
+
+        <div className="mt-4 lg:mt-auto">
+          {!resultBlob ? (
+            <button
+              onClick={handleProcess}
+              disabled={files.length < 2 || processing}
+              className="ilovepdf-action-btn"
+              style={{ backgroundColor: files.length >= 2 && !processing ? colorHex : '#94a3b8' }}
+            >
+              {processing ? (
+                <><Loader2 className="w-5 h-5 animate-spin mr-2" />Uniendo...</>
+              ) : (
+                'Unir PDF'
+              )}
+            </button>
+          ) : (
+            <button onClick={handleDownload} className="ilovepdf-action-btn download">
+              <Download className="w-5 h-5 mr-2" />
+              Descargar PDF unido
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Loader2, Download, Image as ImageIcon, Box, FileStack, ChevronRight, X } from 'lucide-react';
-import axios from 'axios';
+import client from '../api/client';
 import * as pdfjsLib from 'pdfjs-dist';
 
 // Vite worker initialization para PDF.js
@@ -71,7 +71,7 @@ const PdfToJpgTool: React.FC<PdfToJpgToolProps> = ({ colorHex }) => {
       formData.append('file', file);
       // El backend actual solo tiene /pdf-to-jpg que hace 'pages'
       // Si quisiéramos 'extract images', necesitaríamos otro endpoint o parámetro
-      const resp = await axios.post('/api/v1/tools/pdf-to-jpg', formData, { responseType: 'blob' });
+      const resp = await client.post('/tools/pdf-to-jpg', formData, { responseType: 'blob' });
       setResultBlob(resp.data);
     } catch (err) {
       alert("Error al convertir el PDF.");
@@ -131,48 +131,49 @@ const PdfToJpgTool: React.FC<PdfToJpgToolProps> = ({ colorHex }) => {
         </div>
       </div>
 
-      <div className="ilovepdf-side-panel">
-        <div className="mb-8">
-          <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-6">Opciones PDF a JPG</h4>
+      {/* Panel lateral de acción - Mobile friendly */}
+      <div className="ilovepdf-side-panel mobile-friendly">
+        <div className="mb-4 lg:mb-8 overflow-y-auto max-h-[250px] lg:max-h-none pr-1">
+          <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 lg:mb-6">Opciones PDF a JPG</h4>
           
           <div className="space-y-3">
             <button 
               onClick={() => setMode('pages')}
-              className={`w-full p-4 rounded-2xl border-2 text-left transition-all ${
+              className={`w-full p-3 lg:p-4 rounded-2xl border-2 text-left transition-all ${
                 mode === 'pages' ? 'border-indigo-500 bg-indigo-50/30' : 'border-slate-100 bg-slate-50 hover:border-slate-200'
               }`}
             >
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3 lg:gap-4">
                 <div className={`p-2 rounded-xl ${mode === 'pages' ? 'bg-indigo-500 text-white' : 'bg-white text-slate-400'}`}>
-                  <ImageIcon className="w-5 h-5" />
+                  <ImageIcon className="w-4 h-4 lg:w-5 lg:h-5" />
                 </div>
                 <div>
-                  <span className="block text-sm font-bold text-slate-800">Páginas a JPG</span>
-                  <span className="block text-[11px] text-slate-400 leading-snug">Cada página se convertirá en un JPG.</span>
+                  <span className="block text-xs lg:text-sm font-bold text-slate-800">Páginas a JPG</span>
+                  <span className="block text-[10px] text-slate-400 leading-snug">Cada página a JPG.</span>
                 </div>
               </div>
             </button>
 
             <button 
               onClick={() => setMode('images')}
-              className={`w-full p-4 rounded-2xl border-2 text-left transition-all ${
+              className={`w-full p-3 lg:p-4 rounded-2xl border-2 text-left transition-all ${
                 mode === 'images' ? 'border-indigo-500 bg-indigo-50/30' : 'border-slate-100 bg-slate-50 hover:border-slate-200'
               }`}
             >
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3 lg:gap-4">
                 <div className={`p-2 rounded-xl ${mode === 'images' ? 'bg-indigo-500 text-white' : 'bg-white text-slate-400'}`}>
-                  <Box className="w-5 h-5" />
+                  <Box className="w-4 h-4 lg:w-5 lg:h-5" />
                 </div>
                 <div>
-                  <span className="block text-sm font-bold text-slate-800">Extraer imágenes</span>
-                  <span className="block text-[11px] text-slate-400 leading-snug">Solo se extraerán las fotos del PDF.</span>
+                  <span className="block text-xs lg:text-sm font-bold text-slate-800">Extraer imágenes</span>
+                  <span className="block text-[10px] text-slate-400 leading-snug">Solo las fotos del PDF.</span>
                 </div>
               </div>
             </button>
           </div>
         </div>
 
-        <div className="mt-auto pt-8 border-t border-slate-100">
+        <div className="mt-auto pt-4 lg:pt-8 border-t border-slate-100 lg:border-none">
           {!resultBlob ? (
             <button
               onClick={handleProcess}

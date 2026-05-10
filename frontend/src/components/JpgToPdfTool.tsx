@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { Loader2, Download, Trash2, GripVertical, PlusCircle, ChevronRight, Image as ImageIcon } from 'lucide-react';
-import axios from 'axios';
+import client from '../api/client';
 
 // Smooth Drag & Drop imports
 import {
@@ -137,7 +137,7 @@ const JpgToPdfTool: React.FC<JpgToPdfToolProps> = ({ colorHex }) => {
     try {
       const formData = new FormData();
       files.forEach(f => formData.append('files', f.file));
-      const resp = await axios.post('/api/v1/tools/jpg-to-pdf', formData, { responseType: 'blob' });
+      const resp = await client.post('/tools/jpg-to-pdf', formData, { responseType: 'blob' });
       setResultBlob(resp.data);
     } catch (err: any) {
       alert('Error al convertir las imágenes.');
@@ -210,24 +210,30 @@ const JpgToPdfTool: React.FC<JpgToPdfToolProps> = ({ colorHex }) => {
         </DndContext>
       </div>
 
-      <div className="ilovepdf-side-panel">
-        <div className="ilovepdf-side-info">
-          <span className="text-2xl font-black text-slate-800">{files.length}</span>
-          <span className="text-sm text-slate-500">imágenes</span>
-          <div className="mt-4 flex items-center gap-2 text-indigo-500">
-            <ImageIcon className="w-5 h-5" />
-            <span className="text-xs font-bold uppercase tracking-wider">A PDF</span>
+      {/* Panel lateral de acción - Mobile friendly */}
+      <div className="ilovepdf-side-panel mobile-friendly">
+        <div className="ilovepdf-side-info flex-row lg:flex-col gap-4 lg:gap-2">
+          <div className="flex flex-col items-center">
+            <span className="text-xl lg:text-2xl font-black text-slate-800">{files.length}</span>
+            <span className="text-[10px] lg:text-sm text-slate-500 uppercase font-bold">imágenes</span>
+          </div>
+          <div className="w-px h-8 bg-slate-200 lg:hidden"></div>
+          <div className="flex flex-col items-center">
+            <div className="flex items-center gap-2 text-indigo-500">
+              <ImageIcon className="w-4 h-4 lg:w-5 lg:h-5" />
+              <span className="text-[10px] lg:text-xs font-bold uppercase tracking-wider">A PDF</span>
+            </div>
           </div>
         </div>
         
-        <div className="mt-8">
+        <div className="hidden lg:block mt-8">
           <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Ajustes de imagen</h4>
           <div className="p-4 bg-slate-50 rounded-xl border border-slate-100 text-[11px] text-slate-500 leading-relaxed">
             Las imágenes se convertirán manteniendo su tamaño original y orientación.
           </div>
         </div>
 
-        <div className="mt-auto pt-8 border-t border-slate-100">
+        <div className="mt-4 lg:mt-auto pt-4 lg:pt-8 border-t border-slate-100 lg:border-none">
           {!resultBlob ? (
             <button
               onClick={handleProcess}

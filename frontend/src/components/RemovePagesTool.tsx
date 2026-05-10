@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Loader2, Download, Trash2, FileStack, X, ChevronRight } from 'lucide-react';
-import axios from 'axios';
+import client from '../api/client';
 import * as pdfjsLib from 'pdfjs-dist';
 
 // Vite worker initialization para PDF.js
@@ -94,7 +94,7 @@ const RemovePagesTool: React.FC<RemovePagesToolProps> = ({ colorHex }) => {
       // El backend actual usa una lista separada por comas
       formData.append('pages', Array.from(pagesToRemove).join(','));
 
-      const resp = await axios.post('/api/v1/tools/remove-pages', formData, { responseType: 'blob' });
+      const resp = await client.post('/tools/remove-pages', formData, { responseType: 'blob' });
       setResultBlob(resp.data);
     } catch (err) {
       alert("Error al eliminar las páginas.");
@@ -179,24 +179,24 @@ const RemovePagesTool: React.FC<RemovePagesToolProps> = ({ colorHex }) => {
         </div>
       </div>
 
-      {/* Panel Lateral: Acciones */}
-      <div className="ilovepdf-side-panel remove-options-panel">
+      {/* Panel Lateral: Acciones - Mobile friendly */}
+      <div className="ilovepdf-side-panel remove-options-panel mobile-friendly">
         <div className="flex-1 flex flex-col">
-          <div className="mb-8">
-            <h4 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-6">Páginas a eliminar</h4>
+          <div className="mb-4 lg:mb-8">
+            <h4 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-4 lg:mb-6">Páginas a eliminar</h4>
             
-            <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100">
-              <div className="flex items-center justify-between mb-4">
+            <div className="bg-slate-50 rounded-2xl p-4 lg:p-6 border border-slate-100">
+              <div className="flex items-center justify-between mb-3 lg:mb-4">
                 <span className="text-sm font-bold text-slate-600">Seleccionadas:</span>
                 <span className="text-lg font-black text-red-500">{pagesToRemove.size}</span>
               </div>
-              <p className="text-[11px] text-slate-400 leading-snug">
+              <p className="text-[10px] lg:text-[11px] text-slate-400 leading-snug">
                 Haz clic sobre las páginas que desees quitar del documento final.
               </p>
             </div>
           </div>
 
-          <div className="mt-auto pt-8 border-t border-slate-100">
+          <div className="mt-auto pt-4 lg:pt-8 border-t border-slate-100 lg:border-none">
             {!resultBlob ? (
               <button
                 onClick={handleProcess}

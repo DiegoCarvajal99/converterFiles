@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { Loader2, Download, Trash2, FileText, CheckCircle2, PlusCircle } from 'lucide-react';
-import axios from 'axios';
+import client from '../api/client';
 
 type ToolType = 'single-to-single' | 'single-to-zip' | 'multi-to-single';
 
@@ -74,7 +74,7 @@ const ToolUploader: React.FC<ToolUploaderProps> = ({
         Object.entries(extra).forEach(([k, v]) => formData.append(k, v));
       }
 
-      const resp = await axios.post(`/api/v1/tools${endpoint}`, formData, { responseType: 'blob' });
+      const resp = await client.post(`/tools${endpoint}`, formData, { responseType: 'blob' });
 
       const contentDisp = resp.headers['content-disposition'] || '';
       const match = contentDisp.match(/filename="?([^"]+)"?/);
@@ -173,8 +173,8 @@ const ToolUploader: React.FC<ToolUploaderProps> = ({
         )}
       </div>
 
-      {/* Panel lateral */}
-      <div className="ilovepdf-side-panel">
+      {/* Panel lateral - Responsive fix */}
+      <div className="ilovepdf-side-panel mobile-friendly">
         {/* Opciones extra */}
         {extraFields && !resultBlob && (
           <div className="ilovepdf-side-options">
@@ -183,25 +183,27 @@ const ToolUploader: React.FC<ToolUploaderProps> = ({
         )}
 
         {/* Botón de acción */}
-        {!resultBlob ? (
-          <button
-            onClick={handleProcess}
-            disabled={processing || files.length === 0}
-            className="ilovepdf-action-btn"
-            style={{ backgroundColor: !processing ? colorHex : '#94a3b8' }}
-          >
-            {processing ? (
-              <><Loader2 className="w-5 h-5 animate-spin mr-2" />Procesando...</>
-            ) : (
-              'Procesar'
-            )}
-          </button>
-        ) : (
-          <button onClick={handleDownload} className="ilovepdf-action-btn download">
-            <Download className="w-5 h-5 mr-2" />
-            Descargar
-          </button>
-        )}
+        <div className="mt-auto pt-4 border-t border-slate-100 lg:border-none">
+          {!resultBlob ? (
+            <button
+              onClick={handleProcess}
+              disabled={processing || files.length === 0}
+              className="ilovepdf-action-btn"
+              style={{ backgroundColor: !processing ? colorHex : '#94a3b8' }}
+            >
+              {processing ? (
+                <><Loader2 className="w-5 h-5 animate-spin mr-2" />Procesando...</>
+              ) : (
+                'Procesar ahora'
+              )}
+            </button>
+          ) : (
+            <button onClick={handleDownload} className="ilovepdf-action-btn download">
+              <Download className="w-5 h-5 mr-2" />
+              Descargar archivo
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

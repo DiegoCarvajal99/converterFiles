@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Loader2, Download, Zap, Gauge, ShieldCheck, FileStack, ChevronRight, X } from 'lucide-react';
-import axios from 'axios';
+import client from '../api/client';
 
 interface CompressPdfToolProps {
   colorHex: string;
@@ -30,7 +30,7 @@ const CompressPdfTool: React.FC<CompressPdfToolProps> = ({ colorHex }) => {
       formData.append('file', file);
       formData.append('level', compressLevel);
 
-      const resp = await axios.post('/api/v1/tools/compress', formData, { responseType: 'blob' });
+      const resp = await client.post('/tools/compress', formData, { responseType: 'blob' });
       
       // Obtener tamaños de los headers si el backend los envía
       const origSize = parseInt(resp.headers['x-original-size'] || file.size.toString());
@@ -102,32 +102,32 @@ const CompressPdfTool: React.FC<CompressPdfToolProps> = ({ colorHex }) => {
         </div>
       </div>
 
-      <div className="ilovepdf-side-panel">
-        <div className="mb-8">
-          <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-6">Nivel de compresión</h4>
+      <div className="ilovepdf-side-panel mobile-friendly">
+        <div className="mb-4 lg:mb-8 overflow-y-auto max-h-[300px] lg:max-h-none pr-1">
+          <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 lg:mb-6">Nivel de compresión</h4>
           
           <div className="space-y-3">
             {[
-              { id: 'high', label: 'Compresión Extrema', desc: 'Menos calidad, alta compresión', icon: Zap, color: 'bg-red-50 text-red-600 border-red-100' },
-              { id: 'medium', label: 'Compresión Recomendada', desc: 'Buena calidad, buena compresión', icon: Gauge, color: 'bg-indigo-50 text-indigo-600 border-indigo-100' },
-              { id: 'low', label: 'Baja Compresión', desc: 'Alta calidad, baja compresión', icon: ShieldCheck, color: 'bg-emerald-50 text-emerald-600 border-emerald-100' }
+              { id: 'high', label: 'Extrema', desc: 'Menos calidad', icon: Zap, color: 'bg-red-50 text-red-600 border-red-100' },
+              { id: 'medium', label: 'Recomendada', desc: 'Buena calidad', icon: Gauge, color: 'bg-indigo-50 text-indigo-600 border-indigo-100' },
+              { id: 'low', label: 'Baja', desc: 'Alta calidad', icon: ShieldCheck, color: 'bg-emerald-50 text-emerald-600 border-emerald-100' }
             ].map((opt) => (
               <button 
                 key={opt.id}
                 onClick={() => setCompressLevel(opt.id as any)}
-                className={`w-full p-4 rounded-2xl border-2 text-left transition-all group ${
+                className={`w-full p-3 lg:p-4 rounded-2xl border-2 text-left transition-all group ${
                   compressLevel === opt.id 
                     ? `${opt.color.replace('border-', 'border-').split(' ')[2]} shadow-lg shadow-indigo-100` 
                     : 'border-slate-100 bg-slate-50 hover:border-slate-200'
                 }`}
               >
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3 lg:gap-4">
                   <div className={`p-2 rounded-xl transition-colors ${compressLevel === opt.id ? opt.color : 'bg-white text-slate-400'}`}>
-                    <opt.icon className="w-5 h-5" />
+                    <opt.icon className="w-4 h-4 lg:w-5 lg:h-5" />
                   </div>
                   <div>
-                    <span className={`block text-sm font-bold ${compressLevel === opt.id ? 'text-slate-800' : 'text-slate-600'}`}>{opt.label}</span>
-                    <span className="block text-[11px] text-slate-400">{opt.desc}</span>
+                    <span className={`block text-xs lg:text-sm font-bold ${compressLevel === opt.id ? 'text-slate-800' : 'text-slate-600'}`}>{opt.label}</span>
+                    <span className="block text-[10px] text-slate-400">{opt.desc}</span>
                   </div>
                 </div>
               </button>
@@ -135,7 +135,7 @@ const CompressPdfTool: React.FC<CompressPdfToolProps> = ({ colorHex }) => {
           </div>
         </div>
 
-        <div className="mt-auto pt-8 border-t border-slate-100">
+        <div className="mt-auto pt-4 lg:pt-8 border-t border-slate-100 lg:border-none">
           {!resultBlob ? (
             <button
               onClick={handleProcess}

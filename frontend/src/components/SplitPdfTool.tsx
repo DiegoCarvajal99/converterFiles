@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Loader2, Download, Trash2, PlusCircle, Scissors, FileStack, CheckCircle2, X } from 'lucide-react';
-import axios from 'axios';
+import client from '../api/client';
 import * as pdfjsLib from 'pdfjs-dist';
 
 // Vite worker initialization para PDF.js
@@ -134,7 +134,7 @@ const SplitPdfTool: React.FC<SplitPdfToolProps> = ({ colorHex }) => {
       formData.append('ranges', JSON.stringify(rangesPayload));
       formData.append('merge_all', mergeAll.toString());
 
-      const resp = await axios.post('/api/v1/tools/advanced-split', formData, { responseType: 'blob' });
+      const resp = await client.post('/tools/advanced-split', formData, { responseType: 'blob' });
       setResultBlob(resp.data);
     } catch (err) {
       alert("Error al procesar el PDF.");
@@ -297,10 +297,10 @@ const SplitPdfTool: React.FC<SplitPdfToolProps> = ({ colorHex }) => {
         </div>
       </div>
 
-      {/* Panel Lateral: Opciones de Dividir */}
-      <div className="ilovepdf-side-panel split-options-panel">
+      {/* Panel Lateral: Opciones de Dividir - Mobile friendly */}
+      <div className="ilovepdf-side-panel split-options-panel mobile-friendly">
         {/* Tabs */}
-        <div className="flex bg-slate-100 p-1 rounded-xl mb-6">
+        <div className="flex bg-slate-100 p-1 rounded-xl mb-4 lg:mb-6">
           <button 
             onClick={() => setActiveTab('ranges')}
             className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition-all flex items-center justify-center gap-2 ${
@@ -321,9 +321,9 @@ const SplitPdfTool: React.FC<SplitPdfToolProps> = ({ colorHex }) => {
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar flex flex-col">
+        <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar flex flex-col max-h-[300px] lg:max-h-none">
           {activeTab === 'ranges' ? (
-            <div className="space-y-6">
+            <div className="space-y-4 lg:space-y-6">
               <div className="flex items-center justify-between">
                 <h4 className="text-sm font-bold text-slate-700">Rangos de páginas</h4>
                 <button 
@@ -383,7 +383,7 @@ const SplitPdfTool: React.FC<SplitPdfToolProps> = ({ colorHex }) => {
               </label>
             </div>
           ) : (
-            <div className="space-y-6">
+            <div className="space-y-4 lg:space-y-6">
               <div className="space-y-3">
                 <button 
                   onClick={() => setExtractMode('all')}
@@ -440,7 +440,7 @@ const SplitPdfTool: React.FC<SplitPdfToolProps> = ({ colorHex }) => {
           )}
         </div>
 
-        <div className="mt-8">
+        <div className="mt-6 lg:mt-8">
           {!resultBlob ? (
             <button
               onClick={handleProcess}

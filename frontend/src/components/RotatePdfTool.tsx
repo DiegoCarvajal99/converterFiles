@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Loader2, Download, RotateCw, RotateCcw, FileStack, CheckCircle2, X, RefreshCw, ChevronRight } from 'lucide-react';
-import axios from 'axios';
+import client from '../api/client';
 import * as pdfjsLib from 'pdfjs-dist';
 
 // Vite worker initialization para PDF.js
@@ -112,7 +112,7 @@ const RotatePdfTool: React.FC<RotatePdfToolProps> = ({ colorHex }) => {
 
       formData.append('rotations', JSON.stringify(rotationsPayload));
 
-      const resp = await axios.post('/api/v1/tools/advanced-rotate', formData, { responseType: 'blob' });
+      const resp = await client.post('/tools/advanced-rotate', formData, { responseType: 'blob' });
       setResultBlob(resp.data);
     } catch (err) {
       alert("Error al rotar el PDF.");
@@ -200,13 +200,13 @@ const RotatePdfTool: React.FC<RotatePdfToolProps> = ({ colorHex }) => {
         </div>
       </div>
 
-      {/* Panel Lateral: Opciones de Rotación */}
-      <div className="ilovepdf-side-panel rotate-options-panel">
+      {/* Panel Lateral: Opciones de Rotación - Mobile friendly */}
+      <div className="ilovepdf-side-panel rotate-options-panel mobile-friendly">
         <div className="flex-1 flex flex-col">
-          <div className="mb-8">
-            <h4 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-6">Rotación</h4>
+          <div className="mb-4 lg:mb-8">
+            <h4 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-4 lg:mb-6">Rotación</h4>
             
-            <div className="flex gap-3 mb-6">
+            <div className="flex gap-3 mb-4 lg:mb-6">
               <button 
                 onClick={() => rotateAll('ccw')}
                 className="flex-1 py-4 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 hover:bg-slate-100 transition-all flex flex-col items-center gap-2 group"
@@ -225,14 +225,14 @@ const RotatePdfTool: React.FC<RotatePdfToolProps> = ({ colorHex }) => {
 
             <button 
               onClick={resetAll}
-              className="w-full py-3 text-xs font-bold text-slate-400 hover:text-indigo-600 transition-colors flex items-center justify-center gap-2"
+              className="w-full py-2 lg:py-3 text-xs font-bold text-slate-400 hover:text-indigo-600 transition-colors flex items-center justify-center gap-2"
             >
               <RefreshCw className="w-3.5 h-3.5" />
               Restablecer todas
             </button>
           </div>
 
-          <div className="mt-auto pt-8 border-t border-slate-100">
+          <div className="mt-auto pt-4 lg:pt-8 border-t border-slate-100 lg:border-none">
             {!resultBlob ? (
               <button
                 onClick={handleProcess}
